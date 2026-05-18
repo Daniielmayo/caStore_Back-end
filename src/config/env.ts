@@ -15,6 +15,7 @@ const envSchema = z.object({
   DB_PASSWORD: z.string(),
   DB_POOL_MIN: z.coerce.number().default(2),
   DB_POOL_MAX: z.coerce.number().default(10),
+  DB_SSL: z.preprocess((val) => val === 'true', z.boolean()).default(false),
   
   // Security
   JWT_SECRET: z.string().min(64),
@@ -27,6 +28,7 @@ const envSchema = z.object({
   SMTP_PORT: z.coerce.number().default(587),
   SMTP_USER: z.string(),
   SMTP_PASS: z.string(),
+  SMTP_FROM: z.string(),
   
   // App
   FRONTEND_URL: z.string().url(),

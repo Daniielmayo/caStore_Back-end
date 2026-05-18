@@ -11,6 +11,11 @@ export const pool = mysql.createPool({
   connectionLimit: env.DB_POOL_MAX,
   queueLimit: 0,
   timezone: 'Z',
+  ssl: env.DB_SSL ? { 
+    rejectUnauthorized: false
+  } : undefined,
+  connectTimeout: 20000,
+  enableKeepAlive: true,
 });
 
 // Para SELECT — soporta LIMIT y OFFSET como parámetros
@@ -45,12 +50,22 @@ export async function getConnection(): Promise<mysql.PoolConnection> {
 }
 
 export async function testConnection(): Promise<void> {
-  try {
-    const connection = await pool.getConnection();
-    console.log('✅ Database connected successfully');
-    connection.release();
-  } catch (error) {
-    console.error('❌ Database connection failed:', error);
-    throw error;
+  const maxRetries = 5;
+  const retryInterval = 3000; // 3 seconds
+
+  for (let i = 1; i <= maxRetries; i++) {
+    try {
+      const connection = await pool.getConnection();
+      console.log('✅ Database connected successfully');
+      connection.release();
+      return;
+    } catch (error) {
+      if (i === maxRetries) {
+        console.error(`❌ Database connection failed after ${maxRetries} attempts:`, error);
+        throw error;
+      }
+      console.warn(`⚠️ Database connection attempt ${i}/${maxRetries} failed. Retrying in ${retryInterval / 1000}s...`);
+      await new Promise(resolve => setTimeout(resolve, retryInterval));
+    }
   }
 }

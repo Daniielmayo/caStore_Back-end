@@ -5,7 +5,16 @@ import { successResponse, paginatedResponse } from '../../shared/utils/response.
 import { AuthRequest } from '../../shared/types';
 
 export class UserController {
-  constructor(private service: UserService) {}
+  constructor(private service: UserService) { }
+  create = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const dto = CreateUserSchema.parse(req.body);
+      const user = await this.service.create(dto);
+      return successResponse(res, user, 'Usuario creado. Se enviaron las credenciales al correo.', 201);
+    } catch (error) {
+      next(error);
+    }
+  };
 
   getAll = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
@@ -28,16 +37,6 @@ export class UserController {
     try {
       const user = await this.service.getById(req.params.id as string);
       return successResponse(res, user, 'Usuario recuperado correctamente');
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  create = async (req: AuthRequest, res: Response, next: NextFunction) => {
-    try {
-      const dto = CreateUserSchema.parse(req.body);
-      const user = await this.service.create(dto);
-      return successResponse(res, user, 'Usuario creado. Se enviaron las credenciales al correo.', 201);
     } catch (error) {
       next(error);
     }

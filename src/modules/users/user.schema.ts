@@ -3,13 +3,13 @@ import { z } from 'zod';
 export const CreateUserSchema = z.object({
   fullName: z.string().min(1, 'El nombre completo es requerido').max(150),
   email: z.string().min(1, 'El correo es requerido').email('Correo electrónico inválido'),
-  roleId: z.string().uuid('ID de rol inválido'),
+  roleId: z.string().min(1, 'ID de rol inválido'),
 });
 
 export const UpdateUserSchema = z.object({
   fullName: z.string().min(1).max(150).optional(),
   email: z.string().email().optional(),
-  roleId: z.string().uuid().optional(),
+  roleId: z.string().optional(),
 });
 
 export const UpdateProfileSchema = z.object({
@@ -34,7 +34,7 @@ export const GetUsersSchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
   search: z.string().optional(),
-  roleId: z.string().uuid().optional(),
+  roleId: z.string().optional(),
   status: z.enum(['all', 'active', 'inactive']).default('all'),
 });
 

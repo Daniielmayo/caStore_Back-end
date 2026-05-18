@@ -17,43 +17,7 @@ export class UserService {
     private roleRepo: RoleRepository = new RoleRepository()
   ) {}
 
-  async getAll(filters: GetUsersDto): Promise<PaginatedResult<UserWithRole>> {
-    const page = parseInt(String(filters.page)) || 1;
-    const limit = parseInt(String(filters.limit)) || 10;
-
-    const [data, total] = await Promise.all([
-      this.repo.findAll(filters),
-      this.repo.count(filters),
-    ]);
-
-    const totalPages = Math.ceil(total / limit);
-    const hasNextPage = page < totalPages;
-    const hasPrevPage = page > 1;
-
-    return {
-      data,
-      total,
-      page,
-      limit,
-      totalPages,
-      hasNextPage,
-      hasPrevPage,
-      nextPage: hasNextPage ? page + 1 : null,
-      prevPage: hasPrevPage ? page - 1 : null,
-      from: total === 0 ? 0 : (page - 1) * limit + 1,
-      to: total === 0 ? 0 : Math.min(page * limit, total),
-    };
-  }
-
-  async getById(id: string): Promise<UserWithRole> {
-    const user = await this.repo.findById(id);
-    if (!user) {
-      throw new NotFoundError('Usuario');
-    }
-    return user;
-  }
-
-  async create(dto: CreateUserDto): Promise<UserWithRole> {
+ async create(dto: CreateUserDto): Promise<UserWithRole> {
     // 1. Verificar email
     const existingUser = await this.repo.findByEmail(dto.email);
     if (existingUser) {
@@ -89,6 +53,42 @@ export class UserService {
 
     // 8. Retornar
     return this.getById(id);
+  }
+
+  async getAll(filters: GetUsersDto): Promise<PaginatedResult<UserWithRole>> {
+    const page = parseInt(String(filters.page)) || 1;
+    const limit = parseInt(String(filters.limit)) || 10;
+
+    const [data, total] = await Promise.all([
+      this.repo.findAll(filters),
+      this.repo.count(filters),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage,
+      hasPrevPage,
+      nextPage: hasNextPage ? page + 1 : null,
+      prevPage: hasPrevPage ? page - 1 : null,
+      from: total === 0 ? 0 : (page - 1) * limit + 1,
+      to: total === 0 ? 0 : Math.min(page * limit, total),
+    };
+  }
+
+  async getById(id: string): Promise<UserWithRole> {
+    const user = await this.repo.findById(id);
+    if (!user) {
+      throw new NotFoundError('Usuario');
+    }
+    return user;
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserWithRole> {

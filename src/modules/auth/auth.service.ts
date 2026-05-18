@@ -87,22 +87,23 @@ export class AuthService {
     const resetLink = `${env.FRONTEND_URL}/reset-password/${token}`;
 
     const html = `
-      <div style="font-family: Arial, sans-serif; color: #333;">
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
         <div style="background-color: #F8623A; padding: 20px; text-align: center;">
           <h1 style="color: white; margin: 0;">SGIA</h1>
         </div>
         <div style="padding: 20px;">
-          <p>Hola <strong>${user.fullName}</strong>,</p>
+          <h2>Hola, ${user.fullName}</h2>
           <p>Has solicitado restablecer tu contraseña para el Sistema de Gestión de Inventario Automotriz (SGIA).</p>
           <p>Haz clic en el botón de abajo para continuar con el proceso:</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetLink}" style="background-color: #F8623A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
-              Restablecer Contraseña
-            </a>
+            <a href="${resetLink}" style="background-color: #F8623A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Restablecer Contraseña</a>
           </div>
-          <p style="font-size: 0.9em; color: #666;">Este enlace expirará en 30 minutos.</p>
+          <p style="color: #666; font-size: 0.9em;">Este enlace expirará en 30 minutos.</p>
           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="font-size: 0.8em; color: #999;">Si no solicitaste este cambio, puedes ignorar este correo con seguridad.</p>
+          <p style="color: #666; font-size: 0.8em;">Si no solicitaste este cambio, puedes ignorar este correo con seguridad.</p>
+        </div>
+        <div style="background-color: #f4f4f4; padding: 15px; text-align: center; color: #888; font-size: 0.8em;">
+          © ${new Date().getFullYear()} SGIA - Todos los derechos reservados
         </div>
       </div>
     `;
