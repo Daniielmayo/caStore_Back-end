@@ -18,7 +18,7 @@ build/
 # ─────────────────────────────────────────
 .env
 .env.local
-.env.development
+.env.development    # Credenciales locales de Docker — no subir al repo
 .env.production
 .env.test
 
